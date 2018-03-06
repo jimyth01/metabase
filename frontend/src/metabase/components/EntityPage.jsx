@@ -1,11 +1,17 @@
 import React, { Component } from "react";
 import { Box, Flex } from "rebass";
+import { connect } from "react-redux";
 
 import { PageSidebar, Wrapper } from "./EntityLayout";
 
 import EntityInfo from "./EntityInfo";
 
+import { getMetadata } from "metabase/selectors/metadata";
+import Question from "metabase-lib/lib/Question";
+
 import { loadCard } from "metabase/lib/card";
+
+import { loadMetadataForCard } from "metabase/query_builder/actions";
 
 import { CardApi } from "metabase/services";
 import Visualization from "metabase/visualizations/components/Visualization";
@@ -19,6 +25,8 @@ class EntityPage extends Component {
   async componentDidMount() {
     const card = await loadCard(this.props.params.cardId);
 
+    await loadMetadataForCard(card);
+
     const queryParams = {
       cardId: card.id,
       ignore_cache: false,
@@ -26,11 +34,18 @@ class EntityPage extends Component {
 
     const viz = await CardApi.query(queryParams);
 
-    this.setState({ card, viz });
+    this.setState({
+      card,
+      question: new Question(getMetadata(this.props.state), card),
+      viz,
+    });
   }
 
   render() {
     const { card, viz } = this.state;
+
+    window.q = this.state.question;
+
     return (
       <div>
         <Box
@@ -75,4 +90,11 @@ class EntityPage extends Component {
   }
 }
 
-export default EntityPage;
+export default connect(
+  state => ({
+    state,
+  }),
+  {
+    loadMetadataForCard,
+  },
+)(EntityPage);

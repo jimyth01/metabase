@@ -448,6 +448,7 @@ export const loadMetadataForCard = createThunkAction(
       const query = card && new Question(getMetadata(getState()), card).query();
 
       async function loadMetadataForAtomicQuery(singleQuery) {
+        console.log("we be here?");
         if (
           singleQuery instanceof StructuredQuery &&
           singleQuery.tableId() != null
