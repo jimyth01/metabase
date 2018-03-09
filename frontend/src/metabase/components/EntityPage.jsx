@@ -1,50 +1,39 @@
 import React, { Component } from "react";
 import { Box, Flex } from "rebass";
 import { connect } from "react-redux";
+import { Link } from "react-router";
 
 import { PageSidebar, Wrapper } from "./EntityLayout";
 
 import EntityInfo from "./EntityInfo";
 
-import { getMetadata } from "metabase/selectors/metadata";
-import Question from "metabase-lib/lib/Question";
+import { fetchQuestion } from "metabase/questions/questions";
 
-import { loadCard } from "metabase/lib/card";
+import { getQuestion } from "metabase/questions/selectors";
 
-import { loadMetadataForCard } from "metabase/query_builder/actions";
-
-import { CardApi } from "metabase/services";
 import Visualization from "metabase/visualizations/components/Visualization";
+
+const mapStateToProps = state => ({
+  question: getQuestion(state),
+});
 
 class EntityPage extends Component {
   state = {
     card: {},
-    viz: undefined,
+    viz: null,
   };
-
-  async componentDidMount() {
-    const card = await loadCard(this.props.params.cardId);
-
-    await loadMetadataForCard(card);
-
-    const queryParams = {
-      cardId: card.id,
-      ignore_cache: false,
-    };
-
-    const viz = await CardApi.query(queryParams);
-
-    this.setState({
-      card,
-      question: new Question(getMetadata(this.props.state), card),
-      viz,
-    });
+  componentWillMount() {
+    this.props.dispatch(fetchQuestion(this.props.params.cardId));
   }
 
   render() {
+    const { question } = this.props;
     const { card, viz } = this.state;
 
-    window.q = this.state.question;
+    const mode = question && question.mode();
+    const actions = mode && mode.actions();
+
+    window.q = question;
 
     return (
       <div>
@@ -67,21 +56,30 @@ class EntityPage extends Component {
         <Box>
           <Wrapper>
             <Flex>
-              <EntityInfo entity={card} />
-              <PageSidebar>
-                <Box
-                  p={2}
-                  mt={4}
-                  style={{ border: "1px solid #ddd", borderRadius: 6 }}
-                >
-                  <Box>
-                    <h3>Ways to view this</h3>
+              {question && <EntityInfo entity={question.card()} />}
+              {question && (
+                <PageSidebar>
+                  <Box
+                    p={2}
+                    mt={4}
+                    style={{ border: "1px solid #ddd", borderRadius: 6 }}
+                  >
+                    <Box>
+                      <h3>Ways to view this</h3>
+                      <ol>
+                        {actions.map(action => (
+                          <li className="bordered rounded bg-white p1 inline-block">
+                            <Link to={action.question()}>{action.title}</Link>
+                          </li>
+                        ))}
+                      </ol>
+                    </Box>
+                    <Box>
+                      <h3>Segments for this</h3>
+                    </Box>
                   </Box>
-                  <Box>
-                    <h3>Segments for this</h3>
-                  </Box>
-                </Box>
-              </PageSidebar>
+                </PageSidebar>
+              )}
             </Flex>
           </Wrapper>
         </Box>
@@ -90,11 +88,4 @@ class EntityPage extends Component {
   }
 }
 
-export default connect(
-  state => ({
-    state,
-  }),
-  {
-    loadMetadataForCard,
-  },
-)(EntityPage);
+export default connect(mapStateToProps)(EntityPage);
