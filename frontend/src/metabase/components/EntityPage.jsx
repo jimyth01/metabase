@@ -17,12 +17,11 @@ class EntityPage extends Component {
     return (
       <QuestionHandler>
         { ({ question, result }) => {
-          if(!question) {
-            return (<div>Loading</div>)
-          }
 
-          const mode = question && question.mode();
+          const mode = question.mode && question.mode();
           const actions = mode && mode.actions();
+          const card = question.card && question.card()
+
           return (
             <div key='entity'>
               <Box
@@ -34,7 +33,7 @@ class EntityPage extends Component {
                     className="full-height"
                     rawSeries={[
                       {
-                        card: question.card(),
+                        card,
                         data: result.data
                       },
                     ]}
@@ -44,7 +43,7 @@ class EntityPage extends Component {
               <Box>
                 <Wrapper>
                   <Flex>
-                    <EntityInfo entity={question.card()} />
+                    <EntityInfo entity={card} />
                     <PageSidebar>
                       <Box
                         p={2}
@@ -56,9 +55,11 @@ class EntityPage extends Component {
                           <ol>
                             {actions && actions.map(action => (
                               <li className="bordered rounded bg-white p1 inline-block">
-                                <Link to={action.question().getUrl()}>
-                                  {action.title}
-                                </Link>
+                                { action.question &&  (
+                                  <Link to={action.question().getUrl()}>
+                                    {action.title}
+                                  </Link>
+                                )}
                               </li>
                             ))}
                           </ol>

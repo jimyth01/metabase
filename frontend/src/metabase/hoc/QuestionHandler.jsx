@@ -73,6 +73,9 @@ class QuestionHandler extends React.Component {
   render() {
     const { question, result } = this.props
 
+    window.q = question
+    window.r = result
+
     if(question) {
       return this.props.children({
         question,

@@ -9,7 +9,7 @@ import { isSegmentFilter } from "metabase/lib/query/filter";
 import { t } from "c-3po";
 
 export default ({ question, settings }: ClickActionProps): ClickAction[] => {
-  if (question.card().id && settings["enable_xrays"]) {
+  if (question.card().id) {
     return question
       .query()
       .filters()
