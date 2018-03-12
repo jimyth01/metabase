@@ -11,6 +11,7 @@ import { fetchQuestion } from "metabase/questions/questions";
 
 import { getQuestion } from "metabase/questions/selectors";
 
+import { CardApi } from 'metabase/services'
 import Visualization from "metabase/visualizations/components/Visualization";
 
 const mapStateToProps = state => ({
@@ -19,16 +20,27 @@ const mapStateToProps = state => ({
 
 class EntityPage extends Component {
   state = {
-    card: {},
     viz: null,
   };
-  componentWillMount() {
-    this.props.dispatch(fetchQuestion(this.props.params.cardId));
+  async componentWillMount() {
+    const { params } = this.props
+    this.props.dispatch(fetchQuestion(params.cardId));
+
+    const queryParams = {
+      cardId: params.cardId,
+      ignore_cache: false,
+    };
+
+    const viz = await CardApi.query(queryParams);
+
+    this.setState({
+      viz
+    })
   }
 
   render() {
     const { question } = this.props;
-    const { card, viz } = this.state;
+    const { viz } = this.state;
 
     const mode = question && question.mode();
     const actions = mode && mode.actions();
@@ -46,7 +58,7 @@ class EntityPage extends Component {
               className="full-height"
               rawSeries={[
                 {
-                  card,
+                  card: question.card(),
                   data: viz.data,
                 },
               ]}
@@ -69,7 +81,9 @@ class EntityPage extends Component {
                       <ol>
                         {actions.map(action => (
                           <li className="bordered rounded bg-white p1 inline-block">
-                            <Link to={action.question()}>{action.title}</Link>
+                            <Link to={action.question().getUrl()}>
+                              {action.title}
+                            </Link>
                           </li>
                         ))}
                       </ol>
