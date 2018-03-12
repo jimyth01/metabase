@@ -44,32 +44,30 @@ class EntityPage extends Component {
               <Box>
                 <Wrapper>
                   <Flex>
-                    {question && <EntityInfo entity={question.card()} />}
-                    {question && (
-                      <PageSidebar>
-                        <Box
-                          p={2}
-                          mt={4}
-                          style={{ border: "1px solid #ddd", borderRadius: 6 }}
-                        >
-                          <Box>
-                            <h3>Ways to view this</h3>
-                            <ol>
-                              {actions && actions.map(action => (
-                                <li className="bordered rounded bg-white p1 inline-block">
-                                  <Link to={action.question().getUrl()}>
-                                    {action.title}
-                                  </Link>
-                                </li>
-                              ))}
-                            </ol>
-                          </Box>
-                          <Box>
-                            <h3>Segments for this</h3>
-                          </Box>
+                    <EntityInfo entity={question.card()} />
+                    <PageSidebar>
+                      <Box
+                        p={2}
+                        mt={4}
+                        style={{ border: "1px solid #ddd", borderRadius: 6 }}
+                      >
+                        <Box>
+                          <h3>Ways to view this</h3>
+                          <ol>
+                            {actions && actions.map(action => (
+                              <li className="bordered rounded bg-white p1 inline-block">
+                                <Link to={action.question().getUrl()}>
+                                  {action.title}
+                                </Link>
+                              </li>
+                            ))}
+                          </ol>
                         </Box>
-                      </PageSidebar>
-                    )}
+                        <Box>
+                          <h3>Segments for this</h3>
+                        </Box>
+                      </Box>
+                    </PageSidebar>
                   </Flex>
                 </Wrapper>
               </Box>
