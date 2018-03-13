@@ -152,7 +152,6 @@
     "webpack-postcss-tools": "^1.1.2"
   },
   "scripts": {
-    "docs": "documentation build frontend/src/metabase-lib -f md -o frontend/docs",
     "dev": "yarn && concurrently --kill-others -p name -n 'backend,frontend' -c 'blue,green' 'lein ring server' 'yarn run build-hot'",
     "lint": "yarn run lint-eslint && yarn run lint-prettier",
     "lint-eslint": "eslint --ext .js --ext .jsx --max-warnings 0 frontend/src frontend/test",
@@ -177,7 +176,7 @@
     "precommit": "lint-staged",
     "preinstall": "echo $npm_execpath | grep -q yarn || echo '\\033[0;33mSorry, npm is not supported. Please use Yarn (https://yarnpkg.com/).\\033[0m'",
     "prettier": "prettier --write 'frontend/**/*.{js,jsx,css}'",
-    "docs": "documentation build -f html -o frontend/docs frontend/src/**"
+    "docs": "documentation build -f html -o frontend/docs frontend/src/metabase-lib/**"
   },
   "lint-staged": {
     "frontend/**/*.{js,jsx,css}": [

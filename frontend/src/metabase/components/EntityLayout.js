@@ -37,6 +37,11 @@ export const PageHeading = ({ icon, title }) => (
   </Flex>
 );
 
-export const PageLayout = ({ children }) => <Box w={2 / 3}>{children}</Box>;
+export const PageLayout = ({ children }) =>
+  <Box w={2 / 3}>
+    <Box className="text-measure">
+      {children}
+    </Box>
+  </Box>;
 
 export const PageSidebar = ({ children }) => <Box w={1 / 3}>{children}</Box>;

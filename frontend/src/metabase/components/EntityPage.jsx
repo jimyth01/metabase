@@ -8,6 +8,7 @@ import {
 } from "./EntityLayout";
 
 import EntityInfo from "./EntityInfo";
+import EntitySegments from './EntitySegments'
 
 import Visualization from "metabase/visualizations/components/Visualization";
 import QuestionHandler from 'metabase/hoc/QuestionHandler'
@@ -43,7 +44,7 @@ class EntityPage extends Component {
               <Box>
                 <Wrapper>
                   <Flex>
-                    <EntityInfo entity={card} />
+                    <EntityInfo entity={question} />
                     <PageSidebar>
                       <Box
                         p={2}
@@ -64,9 +65,7 @@ class EntityPage extends Component {
                             ))}
                           </ol>
                         </Box>
-                        <Box>
-                          <h3>Segments for this</h3>
-                        </Box>
+                        <EntitySegments question={question} />
                       </Box>
                     </PageSidebar>
                   </Flex>
