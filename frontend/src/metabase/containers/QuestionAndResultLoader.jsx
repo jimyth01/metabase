@@ -1,4 +1,5 @@
 import React from 'react'
+
 import QuestionLoader from 'metabase/containers/QuestionLoader'
 import QuestionResultLoader from 'metabase/containers/QuestionResultLoader'
 
@@ -24,7 +25,7 @@ const QuestionAndResultLoader = ({ questionId, questionHash, children }) =>
   <QuestionLoader questionId={questionId} questionHash={questionHash}>
     { (question) =>
       <QuestionResultLoader question={question}>
-        { ({ result, cancel, reload }) => children({ question, result, cancel, reload }) }
+        { (props) => children({ question, ...props }) }
       </QuestionResultLoader>
     }
   </QuestionLoader>

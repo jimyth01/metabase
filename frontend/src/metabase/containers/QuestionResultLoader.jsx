@@ -8,8 +8,13 @@ import { defer } from "metabase/lib/promise";
  *
  * @example
  * <QuestionResultLoader question={question}>
- * { (result) =>
- *     <Visualization ... />
+ * { ({ result, cancel, reload }) =>
+ *     <div>
+ *       { result && (<Visualization ... />) }
+ *
+ *       <a onClick={() => reload()}>Reload this please</a>
+ *       <a onClick={() => cancel()}>Changed my mind</a>
+ *     </div>
  * }
  * </QuestionResultLoader>
  *
@@ -22,6 +27,15 @@ export class QuestionResultLoader extends React.Component {
 
   componentWillMount() {
     this._loadResult(this.props.question);
+  }
+
+  componentWillReceiveProps (nextProps) {
+    // if the question is different, we need to do a fresh load
+    // TODO - is this the best way to check for new questions? any performance
+    // implications?
+    if(nextProps.question !== this.props.question) {
+      this._loadResult(nextProps.question)
+    }
   }
 
   /*
@@ -39,7 +53,7 @@ export class QuestionResultLoader extends React.Component {
       // call apiGetResults and pass our cancel to allow for cancelation
       const result = await question.apiGetResults({ cancelDeferred });
 
-      // setState with our result, remove our cancel
+      // setState with our result, remove our cancel since we've finished
       this.setState({ cancel: null, result });
     } else {
       // if there's not a question we can't do anything so go back to our initial
@@ -47,14 +61,21 @@ export class QuestionResultLoader extends React.Component {
       this.setState({ cancel: null, result: null });
     }
   }
-  _reload() {
+
+  /*
+   * a function to pass to the child to allow the component to call
+   * load again
+   */
+  _reload = () => {
     this._loadResult(this.props.question);
   }
 
   /*
-   *
+   * a function to pass to the child to allow the component to interrupt
+   * the query
    */
-  _cancel() {
+  _cancel = () => {
+    // we only want to do things if cancel has been set
     if (this.state.cancel) {
       // call our cancel to cancel the query
       this.state.cancel();
