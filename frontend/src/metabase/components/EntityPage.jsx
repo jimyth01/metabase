@@ -11,17 +11,26 @@ import EntityInfo from "./EntityInfo";
 import EntitySegments from './EntitySegments'
 
 import Visualization from "metabase/visualizations/components/Visualization";
-import QuestionHandler from 'metabase/hoc/QuestionHandler'
+import QuestionLoader from 'metabase/containers/QuestionLoader'
 
 class EntityPage extends Component {
   render() {
     return (
-      <QuestionHandler>
-        { ({ question, result }) => {
+      <QuestionLoader questionId={this.props.params.cardId} questionHash={this.props.location.hash}>
+        { (question) => {
+
+          console.log('question', question)
+          window.q = question
+
+          if(!question) {
+            return <div>"Loading..."</div>
+          }
 
           const mode = question.mode && question.mode();
           const actions = mode && mode.actions();
           const card = question.card && question.card()
+
+          let result
 
           return (
             <div key='entity'>
@@ -74,7 +83,7 @@ class EntityPage extends Component {
             </div>
           )
         }}
-      </QuestionHandler>
+      </QuestionLoader>
     );
   }
 }
