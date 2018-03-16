@@ -9,19 +9,16 @@ import EntitySegments from "./EntitySegments";
 
 import Visualization from "metabase/visualizations/components/Visualization";
 
-import QuestionLoader from "metabase/containers/QuestionLoader";
-import QuestionResultLoader from "metabase/containers/QuestionResultLoader";
+import QuestionAndResultLoader from "metabase/containers/QuestionAndResultLoader";
 
 class EntityPage extends Component {
   render() {
     return (
-      <QuestionLoader
+      <QuestionAndResultLoader
         questionId={this.props.params.cardId}
         questionHash={this.props.location.hash}
       >
-        {question => {
-          console.log("question", question);
-          window.q = question;
+        {({ question, result, cancel, reload }) => {
 
           if (!question) {
             return <div>"Loading..."</div>;
@@ -37,25 +34,21 @@ class EntityPage extends Component {
                 className="border-bottom"
                 style={{ backgroundColor: "#FCFDFD", height: "65vh" }}
               >
-                <QuestionResultLoader question={question}>
-                  {({ result, cancel, reload }) => {
-                    if (!result) {
-                      return <div>"Loading"</div>;
-                    }
-                    return (
-                      <Visualization
-                        className="full-height"
-                        rawSeries={[
-                          {
-                            card,
-                            data: result[0].data,
-                          },
-                        ]}
-                      />
-                    );
-                  }}
-                </QuestionResultLoader>
+                { result && (
+                    <Visualization
+                      className="full-height"
+                      rawSeries={[
+                        {
+                          card,
+                          data: result[0].data,
+                        },
+                      ]}
+                    />
+
+                )}
               </Box>
+              <a onClick={() => reload()}>Reload</a>
+              <a onClick={() => cancel()}>Cancel</a>
               <Box>
                 <Wrapper>
                   <Flex>
@@ -90,7 +83,7 @@ class EntityPage extends Component {
             </div>
           );
         }}
-      </QuestionLoader>
+      </QuestionAndResultLoader>
     );
   }
 }
