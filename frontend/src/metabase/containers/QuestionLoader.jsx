@@ -8,7 +8,7 @@ import SavedQuestionLoader from 'metabase/containers/SavedQuestionLoader'
  *
  * Load either a saved or ad-hoc question depending on which is needed. Use
  * this component if you need to moved between saved and ad-hoc questions
- * as part of the same experience in the same part of the app
+ * as part of the same experience in the same part of the app.
  *
  * @example
  * import QuestionLoader from 'metabase/containers/QuestionLoader
@@ -32,7 +32,7 @@ import SavedQuestionLoader from 'metabase/containers/SavedQuestionLoader'
  *                    .getUrl()
  *          }
  *        >
- *        View this segment
+ *          View this ad-hoc exploration
  *        </Link>
  *      </div>
  *  }
@@ -64,5 +64,4 @@ const QuestionLoader = ({
   ): null;
 
 export default QuestionLoader
-
 

@@ -90,7 +90,7 @@ export class AdHocQuestionLoader extends React.Component {
     // (tables, source db, segments, etc) into
     // the redux store, the resulting metadata will be avaliable as metadata on the
     // component props once it's avaliable
-    await loadMetadataForCard(card)
+    await this.props.dispatch(loadMetadataForCard(card))
 
     // instantiate a new question object using the metadata and saved question
     // so we can use metabase-lib methods to retrieve information and modify
@@ -115,8 +115,4 @@ function mapStateToProps(state) {
   }
 }
 
-const mapDispatchToProps = {
-  loadMetadataForCard
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AdHocQuestionLoader)
+export default connect(mapStateToProps)(AdHocQuestionLoader)
